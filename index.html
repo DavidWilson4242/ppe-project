@@ -1,0 +1,221 @@
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+        <title>PPE for Hospitals</title>
+
+        <style>
+            body {
+                font-family: Arial, Helvetica, sans-serif;
+                margin: 50px 50px;
+            }
+            .field_title {
+                font-weight: bold;
+            }
+
+            /* Always set the map height explicitly to define the size of the div
+            * element that contains the map. */
+            #map {
+                height: 100%;
+            }
+
+        </style>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAg26nFAerS2R5la5jCQVBjps6GihQ_M2I&callback=initMap">
+        </script>
+
+    </head>
+
+    <body>
+        <script language="javascript">
+            
+            // * * * * * * populate dropdown of US States and Territories * * * * * * //
+            var dropdown = "<select name='state_name' id='state_name'>";
+            $(document).ready(
+                function () {
+                    var states = [
+                        'AL', 'AK', 'AS', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'DC', 'FM', 'FL', 'GA',
+                        'GU', 'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MH', 'MD', 'MA',
+                        'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ', 'NM', 'NY', 'NC', 'ND',
+                        'MP', 'OH', 'OK', 'OR', 'PW', 'PA', 'PR', 'RI', 'SC', 'SD', 'TN', 'TX', 'UT',
+                        'VT', 'VI', 'VA', 'WA', 'WV', 'WI', 'WY'
+                    ];
+
+                    // start with dummy option
+                    dropdown += "<option value= 'select a state'> select a state </option>";
+
+                    $.each(states, function (key, value) {
+                        dropdown += "<option value=" + value + ">" + value + "</option>";
+                    })
+
+                    // close the select tag
+                    dropdown += "</select>";
+
+                    // add the dropdown as an HTML string
+                    var selected_state = $('#states').html(dropdown);
+                    console.log(selected_state);
+                    
+                }
+            );
+
+        // * * * * * * adds CSS to the improperly-filled input field * * * * * * //       
+        function addCSS(ID) {
+            
+            $(ID).css({
+                "border": "2px solid red",
+            });
+
+            if (ID != "#state_name") {
+                $(ID).focus();
+            }
+        }
+
+        // * * * * * * validates the form * * * * * * //
+        function validateForm() {
+            console.log("inside validatForm()");
+
+            if ($("#city").val() == "") {
+                addCSS("#city");
+                return false;
+            }
+
+            if ($("#street_address").val() == "") {
+                addCSS("#street_address");
+                return false;
+            }
+
+            if ($("#state_name").val() == "select a state") {
+                addCSS("#state_name");
+                return false;
+            }
+
+            return true;
+        }
+
+        // $(document).ready(function () {
+        //     $("select").change(display);
+        // })
+
+        
+        // * * * * * * gets the user-inputted data from the form * * * * * * //
+        function getUserInput() {
+            
+            // validate the form first
+            if (!validateForm()) {
+                return false;
+
+            }else{
+                //get the values from all form fields
+                var state_picked = $("#state_name").val();
+                console.log("state: ", state_picked);
+
+                var address_entered = $("#street_address").val();
+                console.log("address: ", address_entered);
+
+                var city_entered = $("#city").val();
+                console.log("city: ", city_entered);
+                
+                var zip = $("#zip").val();
+                console.log("zip: ", zip);
+
+                var url = address_entered + ", " + city_entered +  ", " + state_picked + ", " + zip;
+                console.log("URL params:", url);
+            }
+
+            //change to true to send to API
+            return false;
+        }
+
+
+        var map;
+
+        function initMap() {
+            map = new google.maps.Map(
+                document.getElementById('map'),
+                { center: new google.maps.LatLng(-33.91722, 151.23064), zoom: 16 });
+
+            var iconBase =
+                'https://developers.google.com/maps/documentation/javascript/examples/full/images/';
+
+            var icons = {
+                parking: {
+                    icon: iconBase + 'parking_lot_maps.png'
+                },
+                library: {
+                    icon: iconBase + 'library_maps.png'
+                },
+                info: {
+                    icon: iconBase + 'info-i_maps.png'
+                }
+            };
+
+            var features = [
+                {
+                    position: new google.maps.LatLng(-33.91721, 151.22630),
+                }, {
+                    position: new google.maps.LatLng(-33.91539, 151.22820),
+                }, {
+                    position: new google.maps.LatLng(-33.91747, 151.22912),
+                }, {
+                    position: new google.maps.LatLng(-33.91910, 151.22907),
+                }
+            ];
+
+            console.log(typeof features);
+            
+
+            // Create markers
+            var custom_icon = "./hospital-icon.png";
+
+            for (var i = 0; i < features.length; i++) {
+                var marker = new google.maps.Marker({
+                    position: features[i].position,
+                    // icon: icons[features[i].type].icon,
+                    icon: "./hospital-icon-1x.png",
+                    map: map
+                });
+            };
+        }
+    </script>
+
+           
+
+
+        <h1>PPE for Hospitals</h1>
+
+        <form name="numbers-form" onsubmit="return getUserInput()" method="GET">
+
+            <p style="width: 500px">
+                <b>Instructions</b>: <br />
+                Please provide your address in the fields below to get contact information of the three hospitals nearest to you.<br />
+                All fields are required.
+            </p>
+
+            <p class="field_title">Street Address&#42;</p>
+                <input id="street_address" name="street_address">
+
+            <p class="field_title">City&#42;</p>
+                <input id="city" name="city">
+
+            <p class="field_title">State&#42;</p>
+                <div id="states"></div>
+
+            <p class="field_title">Zip Code&#42;</p>
+                <input id="zip" name="zip">
+
+            <br/><br />
+
+            <!-- submit -->
+            <input id="button" type="submit" value="View Results">
+
+
+
+
+        </form>
+
+        <div id="display"></div>
+        <div id="map" style="width: 60%;"></div>
+    </body>
+
+
+</html>
