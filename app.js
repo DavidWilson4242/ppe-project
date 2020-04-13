@@ -109,12 +109,12 @@ function createTwitterAuthenticationString(httpMethod, baseURL, queryParams) {
 	/* the seven values needed for authentication.  see link above for more details */
 	var oauth_values = {
 		oauth_consumer_key:        TWITTER_PUBLIC_APP_KEY,
-	  oauth_nonce:               uuid.v4().replace(/\W/g, ""),
+		oauth_nonce:               uuid.v4().replace(/\W/g, ""),
 		oauth_signature:           undefined,
-	  oauth_signature_method:    "HMAC-SHA1",
-	  oauth_timestamp:           Math.round((new Date()).getTime() / 1000),
-	  oauth_token:               TWITTER_PUBLIC_ACCESS_KEY,
-	  oauth_version:             "1.0"
+		oauth_signature_method:    "HMAC-SHA1",
+		oauth_timestamp:           Math.round((new Date()).getTime() / 1000),
+		oauth_token:               TWITTER_PUBLIC_ACCESS_KEY,
+		oauth_version:             "1.0"
 	} 
 	
 	/* performs percent-encoding according to RFC 3986, Section 2.1 */ 
@@ -211,13 +211,13 @@ function sendTweet(targetUser, enabledLocationServices, lat, lon) {
 
 	if (!enabledLocationServices) {
 		tweetStatus = "Hey @" + targetUser + ", we can't see where you are!" +
-		              "  Please turn on your location sharing settings and tweet at" +
+						"  Please turn on your location sharing settings and tweet at" +
 									" us again on a mobile device with your location attached.  If you'd like to keep your" +
 									" location private or can't use a mobile device, check out our website: <link>"
 	} else {
 		var nearestHospital = getSingleNearestHospital(lat, lon)[0];
 		tweetStatus = "Hey, @" + targetUser + "!  The hospital closest to you is " +
-		              camelCaseName(nearestHospital.name) + ".  They are located at " + 
+						camelCaseName(nearestHospital.name) + ".  They are located at " + 
 									camelCaseName(nearestHospital.address) + ", " + camelCaseName(nearestHospital.city) +
 									", " + nearestHospital.state + " " + nearestHospital.zip + ".  " +
 									"You can find their contact information on their website: " + nearestHospital.website; 
