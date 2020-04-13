@@ -57,8 +57,8 @@ function getSingleNearestHospital(lat, lon) {
     var hospLon = prop.LONGITUDE;
     var dist = Math.sqrt(Math.pow(hospLat - lat, 2) + Math.pow(hospLon - lon, 2));
     if (dist < smallestDist) {
-      smallestDist = dist;
-	  closestHospital = extractHospitalJSON(prop);
+        smallestDist = dist;
+        closestHospital = extractHospitalJSON(prop);
     }
   }
   return [closestHospital];
@@ -211,16 +211,16 @@ function sendTweet(targetUser, enabledLocationServices, lat, lon) {
 
 	if (!enabledLocationServices) {
 		tweetStatus = "Hey @" + targetUser + ", we can't see where you are!" +
-					  "  Please turn on your location sharing settings and tweet at" +
-					  " us again on a mobile device with your location attached.  If you'd like to keep your" +
-					  " location private or can't use a mobile device, check out our website: <link>"
+                      "  Please turn on your location sharing settings and tweet at" +
+                      " us again on a mobile device with your location attached.  If you'd like to keep your" +
+                      " location private or can't use a mobile device, check out our website: <link>"
 	} else {
 		var nearestHospital = getSingleNearestHospital(lat, lon)[0];
 		tweetStatus = "Hey, @" + targetUser + "!  The hospital closest to you is " +
-					  camelCaseName(nearestHospital.name) + ".  They are located at " + 
-					  camelCaseName(nearestHospital.address) + ", " + camelCaseName(nearestHospital.city) +
-					  ", " + nearestHospital.state + " " + nearestHospital.zip + ".  " +
-					  "You can find their contact information on their website: " + nearestHospital.website; 
+                      camelCaseName(nearestHospital.name) + ".  They are located at " + 
+                      camelCaseName(nearestHospital.address) + ", " + camelCaseName(nearestHospital.city) +
+                      ", " + nearestHospital.state + " " + nearestHospital.zip + ".  " +
+                      "You can find their contact information on their website: " + nearestHospital.website; 
 	}
 
 	const url = "https://api.twitter.com/1.1/statuses/update.json";
